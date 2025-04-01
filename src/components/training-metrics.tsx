@@ -1,5 +1,20 @@
 import React from "react";
-import { Card, CardBody, CardHeader, Progress, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, useDisclosure, Accordion, AccordionItem } from "@heroui/react";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Progress,
+  Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  useDisclosure,
+  Accordion,
+  AccordionItem,
+} from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { TrainingRecord } from "../types/training";
 import { useLocalStorage } from "../hooks/use-local-storage";
@@ -25,20 +40,28 @@ interface ExerciseStats {
   avgDuration?: number;
 }
 
-export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => {
+export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({
+  records,
+}) => {
   const [goals, setGoals] = useLocalStorage<Goals>("training-goals", {
     weightGoal: 1000,
-    durationGoal: 60
+    durationGoal: 60,
   });
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const [tempWeightGoal, setTempWeightGoal] = React.useState(goals.weightGoal.toString());
-  const [tempDurationGoal, setTempDurationGoal] = React.useState(goals.durationGoal.toString());
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [tempWeightGoal, setTempWeightGoal] = React.useState(
+    goals.weightGoal.toString()
+  );
+  const [tempDurationGoal, setTempDurationGoal] = React.useState(
+    goals.durationGoal.toString()
+  );
 
-  const strengthRecords = records.filter(record => record.type === "strength");
-  const cardioRecords = records.filter(record => record.type === "cardio");
+  const strengthRecords = records.filter(
+    (record) => record.type === "strength"
+  );
+  const cardioRecords = records.filter((record) => record.type === "cardio");
 
   const totalWeight = strengthRecords.reduce((acc, record) => {
-    return acc + (record.sets! * record.reps! * record.weight!);
+    return acc + record.sets! * record.reps! * record.weight!;
   }, 0);
 
   const totalSets = strengthRecords.reduce((acc, record) => {
@@ -46,7 +69,7 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
   }, 0);
 
   const totalReps = strengthRecords.reduce((acc, record) => {
-    return acc + (record.sets! * record.reps!);
+    return acc + record.sets! * record.reps!;
   }, 0);
 
   const totalDuration = cardioRecords.reduce((acc, record) => {
@@ -66,7 +89,7 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
     const stats: Record<string, ExerciseStats> = {};
 
     // Process strength exercises
-    strengthRecords.forEach(record => {
+    strengthRecords.forEach((record) => {
       if (!stats[record.exercise]) {
         stats[record.exercise] = {};
       }
@@ -77,16 +100,24 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
       currentStats.lastWeight = totalWeight;
 
       // Max weight
-      currentStats.maxWeight = Math.max(currentStats.maxWeight || 0, totalWeight);
+      currentStats.maxWeight = Math.max(
+        currentStats.maxWeight || 0,
+        totalWeight
+      );
 
       // Average weight
-      const records = strengthRecords.filter(r => r.exercise === record.exercise);
-      const totalWeights = records.reduce((acc, r) => acc + (r.sets! * r.reps! * r.weight!), 0);
+      const records = strengthRecords.filter(
+        (r) => r.exercise === record.exercise
+      );
+      const totalWeights = records.reduce(
+        (acc, r) => acc + r.sets! * r.reps! * r.weight!,
+        0
+      );
       currentStats.avgWeight = totalWeights / records.length;
     });
 
     // Process cardio exercises
-    cardioRecords.forEach(record => {
+    cardioRecords.forEach((record) => {
       if (!stats[record.exercise]) {
         stats[record.exercise] = {};
       }
@@ -98,15 +129,28 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
 
       // Max calories and duration
       if (record.caloriesBurned) {
-        currentStats.maxCalories = Math.max(currentStats.maxCalories || 0, record.caloriesBurned);
+        currentStats.maxCalories = Math.max(
+          currentStats.maxCalories || 0,
+          record.caloriesBurned
+        );
       }
-      currentStats.maxDuration = Math.max(currentStats.maxDuration || 0, record.duration!);
+      currentStats.maxDuration = Math.max(
+        currentStats.maxDuration || 0,
+        record.duration!
+      );
 
       // Average calories and duration
-      const records = cardioRecords.filter(r => r.exercise === record.exercise);
+      const records = cardioRecords.filter(
+        (r) => r.exercise === record.exercise
+      );
       if (record.caloriesBurned) {
-        const totalCalories = records.reduce((acc, r) => acc + (r.caloriesBurned || 0), 0);
-        const recordsWithCalories = records.filter(r => r.caloriesBurned).length;
+        const totalCalories = records.reduce(
+          (acc, r) => acc + (r.caloriesBurned || 0),
+          0
+        );
+        const recordsWithCalories = records.filter(
+          (r) => r.caloriesBurned
+        ).length;
         currentStats.avgCalories = totalCalories / recordsWithCalories;
       }
       const totalDuration = records.reduce((acc, r) => acc + r.duration!, 0);
@@ -119,11 +163,11 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
   const handleSaveGoals = () => {
     const newWeightGoal = Number(tempWeightGoal);
     const newDurationGoal = Number(tempDurationGoal);
-    
+
     if (newWeightGoal > 0 && newDurationGoal > 0) {
       setGoals({
         weightGoal: newWeightGoal,
-        durationGoal: newDurationGoal
+        durationGoal: newDurationGoal,
       });
     }
   };
@@ -149,9 +193,9 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                   <Icon icon="lucide:dumbbell" className="text-primary" />
                   <h3 className="text-lg font-semibold">Strength Training</h3>
                 </div>
-                <Button 
+                <Button
                   isIconOnly
-                  variant="light" 
+                  variant="light"
                   onPress={onOpen}
                   className="text-default-400"
                 >
@@ -164,11 +208,12 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                     <div className="flex justify-between mb-1">
                       <span className="text-sm">Total Weight Lifted</span>
                       <span className="text-sm font-semibold">
-                        {totalWeight.toLocaleString()} / {goals.weightGoal.toLocaleString()} kg
+                        {totalWeight.toLocaleString()} /{" "}
+                        {goals.weightGoal.toLocaleString()} kg
                       </span>
                     </div>
-                    <Progress 
-                      value={(totalWeight / goals.weightGoal) * 100} 
+                    <Progress
+                      value={(totalWeight / goals.weightGoal) * 100}
                       color="primary"
                       className="max-w-full"
                     />
@@ -189,13 +234,18 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4">
-                    <h4 className="text-sm font-semibold mb-2">Exercise Statistics</h4>
+                    <h4 className="text-sm font-semibold mb-2">
+                      Exercise Statistics
+                    </h4>
                     {Object.entries(exerciseStats)
                       .filter(([_, stats]) => stats.lastWeight !== undefined)
                       .map(([exercise, stats]) => (
-                        <div key={exercise} className="border rounded-lg p-3 mb-2">
+                        <div
+                          key={exercise}
+                          className="border rounded-lg p-3 mb-2"
+                        >
                           <h5 className="font-medium mb-2">{exercise}</h5>
                           <div className="grid grid-cols-3 gap-2 text-sm">
                             <div>
@@ -212,7 +262,7 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                             </div>
                           </div>
                         </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </CardBody>
@@ -224,9 +274,9 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                   <Icon icon="lucide:heart-pulse" className="text-secondary" />
                   <h3 className="text-lg font-semibold">Cardio Training</h3>
                 </div>
-                <Button 
+                <Button
                   isIconOnly
-                  variant="light" 
+                  variant="light"
                   onPress={onOpen}
                   className="text-default-400"
                 >
@@ -242,8 +292,8 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                         {totalDuration} / {goals.durationGoal} min
                       </span>
                     </div>
-                    <Progress 
-                      value={(totalDuration / goals.durationGoal) * 100} 
+                    <Progress
+                      value={(totalDuration / goals.durationGoal) * 100}
                       color="secondary"
                       className="max-w-full"
                     />
@@ -252,25 +302,38 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                     <div className="flex items-center gap-2">
                       <Icon icon="lucide:map" className="text-default-400" />
                       <div>
-                        <p className="text-sm text-default-400">Total Distance</p>
-                        <p className="font-semibold">{totalDistance.toFixed(1)} km</p>
+                        <p className="text-sm text-default-400">
+                          Total Distance
+                        </p>
+                        <p className="font-semibold">
+                          {totalDistance.toFixed(1)} km
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon icon="lucide:flame" className="text-default-400" />
                       <div>
-                        <p className="text-sm text-default-400">Total Calories</p>
-                        <p className="font-semibold">{totalCalories.toLocaleString()} cal</p>
+                        <p className="text-sm text-default-400">
+                          Total Calories
+                        </p>
+                        <p className="font-semibold">
+                          {totalCalories.toLocaleString()} cal
+                        </p>
                       </div>
                     </div>
                   </div>
 
                   <div className="mt-4">
-                    <h4 className="text-sm font-semibold mb-2">Exercise Statistics</h4>
+                    <h4 className="text-sm font-semibold mb-2">
+                      Exercise Statistics
+                    </h4>
                     {Object.entries(exerciseStats)
                       .filter(([_, stats]) => stats.lastDuration !== undefined)
                       .map(([exercise, stats]) => (
-                        <div key={exercise} className="border rounded-lg p-3 mb-2">
+                        <div
+                          key={exercise}
+                          className="border rounded-lg p-3 mb-2"
+                        >
                           <h5 className="font-medium mb-2">{exercise}</h5>
                           <div className="grid grid-cols-3 gap-2 text-sm mb-2">
                             <div>
@@ -303,7 +366,7 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                             </div>
                           )}
                         </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </CardBody>
@@ -312,11 +375,19 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
         </AccordionItem>
       </Accordion>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      {/* <Modal isOpen={isOpen} onOpenChange={onOpenChange}> */}
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        scrollBehavior="inside"
+        className="modal-container"
+      >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Set Training Goals</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Set Training Goals
+              </ModalHeader>
               <ModalBody>
                 <Input
                   type="number"
@@ -324,7 +395,9 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                   placeholder="Enter target weight"
                   value={tempWeightGoal}
                   onValueChange={setTempWeightGoal}
-                  startContent={<Icon icon="lucide:dumbbell" className="text-default-400" />}
+                  startContent={
+                    <Icon icon="lucide:dumbbell" className="text-default-400" />
+                  }
                 />
                 <Input
                   type="number"
@@ -332,17 +405,22 @@ export const TrainingMetrics: React.FC<TrainingMetricsProps> = ({ records }) => 
                   placeholder="Enter target duration"
                   value={tempDurationGoal}
                   onValueChange={setTempDurationGoal}
-                  startContent={<Icon icon="lucide:clock" className="text-default-400" />}
+                  startContent={
+                    <Icon icon="lucide:clock" className="text-default-400" />
+                  }
                 />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="primary" onPress={() => {
-                  handleSaveGoals();
-                  onClose();
-                }}>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    handleSaveGoals();
+                    onClose();
+                  }}
+                >
                   Save Goals
                 </Button>
               </ModalFooter>

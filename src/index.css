@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+  touch-action: manipulation; /* Prevents double-tap zoom */
+  overscroll-behavior: contain;
+}
+
+.modal-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  overscroll-behavior: contain;
+  z-index: 1000; /* Ensure it's above other elements */
+}
