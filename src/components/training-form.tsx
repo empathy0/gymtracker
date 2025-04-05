@@ -75,19 +75,12 @@ export const TrainingForm: React.FC<TrainingFormProps> = ({ onSubmit }) => {
             </SelectItem>
           </Select>
 
-          {/* <DatePicker
+          <DatePicker
             label="Date"
             placeholder="Select date"
             value={selectedDate}
             onChange={setSelectedDate}
             formatOptions={{ dateStyle: "medium" }}
-          /> */}
-          <DatePicker
-            label="Date"
-            value={selectedDate}
-            onChange={(value) => {
-              if (value) setSelectedDate(value);
-            }}
           />
 
           <Autocomplete

@@ -1,9 +1,11 @@
+import React from "react";
 import { TrainingForm } from "./components/training-form";
 import { TrainingCard } from "./components/training-card";
 import { TrainingMetrics } from "./components/training-metrics";
+import FeedbackButton from './components/FeedbackButton';
 import { TrainingRecord } from "./types/training";
 import { useLocalStorage } from "./hooks/use-local-storage";
-import { addToast } from "@heroui/react";
+import { Toast, addToast } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 export default function App() {
@@ -50,6 +52,7 @@ export default function App() {
             />
           ))}
         </div>
+        <FeedbackButton />
       </div>
     </div>
   );
