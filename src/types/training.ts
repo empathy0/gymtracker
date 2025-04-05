@@ -1,4 +1,4 @@
-export type TrainingType = "strength" | "cardio";
+export type TrainingType = "strength" | "cardio" | "calisthenics";
 
 export interface TrainingRecord {
   id: string;
@@ -8,7 +8,13 @@ export interface TrainingRecord {
   sets?: number;
   reps?: number;
   weight?: number;
+  bodyWeight?: number;
   duration?: number;
   distance?: number;
   caloriesBurned?: number;
+}
+
+export interface UserSettings {
+  bodyWeight: number;
+  lastUpdated: string;
 }
