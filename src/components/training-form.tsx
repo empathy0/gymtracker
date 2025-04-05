@@ -1,5 +1,15 @@
 import React from "react";
-import { Input, Button, Card, CardBody, Select, SelectItem, Autocomplete, AutocompleteItem, DatePicker } from "@heroui/react";
+import {
+  Input,
+  Button,
+  Card,
+  CardBody,
+  Select,
+  SelectItem,
+  Autocomplete,
+  AutocompleteItem,
+  DatePicker,
+} from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { TrainingRecord, TrainingType } from "../types/training";
 import { strengthExercises, cardioExercises } from "../data/exercises";
@@ -12,7 +22,9 @@ interface TrainingFormProps {
 export const TrainingForm: React.FC<TrainingFormProps> = ({ onSubmit }) => {
   const [type, setType] = React.useState<TrainingType>("strength");
   const [exercise, setExercise] = React.useState("");
-  const [selectedDate, setSelectedDate] = React.useState(parseDate(new Date().toISOString().split('T')[0]));
+  const [selectedDate, setSelectedDate] = React.useState(
+    parseDate(new Date().toISOString().split("T")[0])
+  );
   const [sets, setSets] = React.useState("");
   const [reps, setReps] = React.useState("");
   const [weight, setWeight] = React.useState("");
@@ -24,7 +36,7 @@ export const TrainingForm: React.FC<TrainingFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!exercise || !type || !selectedDate) return;
 
     if (type === "strength") {
@@ -67,39 +79,56 @@ export const TrainingForm: React.FC<TrainingFormProps> = ({ onSubmit }) => {
             selectedKeys={[type]}
             onChange={(e) => setType(e.target.value as TrainingType)}
           >
-            <SelectItem key="strength" startContent={<Icon icon="lucide:dumbbell" />}>
+            <SelectItem
+              key="strength"
+              startContent={<Icon icon="lucide:dumbbell" />}
+            >
               Strength
             </SelectItem>
-            <SelectItem key="cardio" startContent={<Icon icon="lucide:heart-pulse" />}>
+            <SelectItem
+              key="cardio"
+              startContent={<Icon icon="lucide:heart-pulse" />}
+            >
               Cardio
             </SelectItem>
           </Select>
 
+          {/* <DatePicker
+             label="Date"
+             placeholder="Select date"
+             value={selectedDate}
+             onChange={setSelectedDate}
+             formatOptions={{ dateStyle: "medium" }}
+           /> */}
           <DatePicker
             label="Date"
-            placeholder="Select date"
             value={selectedDate}
-            onChange={setSelectedDate}
-            formatOptions={{ dateStyle: "medium" }}
+            onChange={(value) => {
+              if (value) setSelectedDate(value);
+            }}
           />
 
           <Autocomplete
             label="Exercise"
-            placeholder={type === "strength" ? "e.g., Bench Press" : "e.g., Running"}
+            placeholder={
+              type === "strength" ? "e.g., Bench Press" : "e.g., Running"
+            }
             defaultItems={exercises}
             allowsCustomValue
             value={exercise}
             onSelectionChange={(key) => {
-              const selected = exercises.find(ex => ex.key === key);
+              const selected = exercises.find((ex) => ex.key === key);
               if (selected) {
                 setExercise(selected.label);
               }
             }}
             onInputChange={setExercise}
             startContent={
-              <Icon 
-                icon={type === "strength" ? "lucide:dumbbell" : "lucide:heart-pulse"} 
-                className="text-default-400" 
+              <Icon
+                icon={
+                  type === "strength" ? "lucide:dumbbell" : "lucide:heart-pulse"
+                }
+                className="text-default-400"
               />
             }
           >
@@ -108,8 +137,12 @@ export const TrainingForm: React.FC<TrainingFormProps> = ({ onSubmit }) => {
                 key={item.key}
                 startContent={
                   <div className="flex items-center gap-2">
-                    <Icon 
-                      icon={type === "strength" ? "lucide:dumbbell" : "lucide:heart-pulse"}
+                    <Icon
+                      icon={
+                        type === "strength"
+                          ? "lucide:dumbbell"
+                          : "lucide:heart-pulse"
+                      }
                       className="text-default-400"
                     />
                   </div>
@@ -171,8 +204,8 @@ export const TrainingForm: React.FC<TrainingFormProps> = ({ onSubmit }) => {
             </div>
           )}
 
-          <Button 
-            color="primary" 
+          <Button
+            color="primary"
             type="submit"
             startContent={<Icon icon="lucide:plus" />}
           >
